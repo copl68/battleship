@@ -11,6 +11,7 @@
 #include<netinet/in.h>
 #include<string.h>
 #include<unistd.h>
+#define BUFFER_SIZE 200
 
 //Method descriptions in server.c
 

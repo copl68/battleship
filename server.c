@@ -35,15 +35,15 @@ int CreateServer(int argc, char* argv[]){
 
 //Receives a message from the client
 void ReceiveServer(char buffer[], int newsockfd){
-	bzero(buffer, 600);
-	int n = recv(newsockfd, buffer, 499, 0);
+	bzero(buffer, BUFFER_SIZE);
+	int n = recv(newsockfd, buffer, BUFFER_SIZE-1, 0);
 	if(n < 0){ fprintf(stderr, "Error: Cannot read from socket\n"); exit(1);}
 
 }
 
 //Sends a message back to the client
 void SendServer(int newsockfd, char buffer[]){
-	int n = send(newsockfd, buffer, 600, 0);
+	int n = send(newsockfd, buffer, BUFFER_SIZE, 0);
 	if(n < 0){
 		fprintf(stderr, "Error: Could not send message"); exit(1);
 	}
