@@ -52,7 +52,6 @@ void ReceiveServer(char buffer[], int newsockfd){
 	bzero(buffer, BUFFER_SIZE);
 	int n = recv(newsockfd, buffer, BUFFER_SIZE-1, 0);
 	if(n < 0){ fprintf(stderr, "Error: Cannot read from socket\n"); exit(1);}
-
 }
 
 //Sends a message back to the client
