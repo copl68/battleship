@@ -1,10 +1,29 @@
 /**
  * Name: Cole Plum
  * Date: 5/3/2020
- * File: server.c
+ * File: sockets.c
  * Description: Takes care of socket connection functions such as creating sockets, connecting them, sending, and receiveing. 
  **/
-#include "server.h"
+#include "sockets.h"
+
+//Creates a socket and connects it to our address to create a client
+int CreateClient(char* argv[]){
+	int sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if(sockfd < 0){ fprintf(stderr, "Error opening socket\n"); exit(0);}
+	
+	struct hostent *server = gethostbyname(argv[2]);
+	if(server == NULL){fprintf(stderr, "Error: no such host\n"); exit(0);}
+	
+	int portno = atoi(argv[1]);	
+	struct sockaddr_in serv_addr;
+	serv_addr.sin_family = AF_INET;
+	bcopy((char*)server->h_addr, (char*)&serv_addr.sin_addr.s_addr, server->h_length);
+	serv_addr.sin_port = htons(portno);
+	if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
+		fprintf(stderr, "Error connecting\n"); exit(0);
+	}
+	return sockfd;
+}
 
 //Creates a socket and binds it to our address to create the server. It then waits for and accepts a connection
 int CreateServer(int argc, char* argv[]){
@@ -14,12 +33,7 @@ int CreateServer(int argc, char* argv[]){
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(sockfd < 0){ fprintf(stderr, "Error: Cannot create socket\n"); exit(1);}
 	bzero((char*) &serv_addr, sizeof(serv_addr));
-	if(argc == 1){
-		portno = 8080;
-	}
-	else if(argc == 2){
-		portno = atoi(argv[1]);
-	}
+	portno = atoi(argv[1]);
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	serv_addr.sin_port = htons(portno);

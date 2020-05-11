@@ -4,6 +4,7 @@
  * File: Server.h
  * Description: The header file which imports the necessary libraries and declares the functions
  **/
+#include <netdb.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/types.h>
@@ -14,6 +15,8 @@
 #define BUFFER_SIZE 200
 
 //Method descriptions in server.c
+
+int CreateClient(char* argv[]);
 
 int CreateServer(int argc, char* argv[]);
 
