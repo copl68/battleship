@@ -48,14 +48,14 @@ int CreateServer(char* argv[]){
 }
 
 //Receives a message from the client
-void ReceiveServer(int newsockfd, char buffer[]){
+void RecvMsg(int newsockfd, char buffer[]){
 	bzero(buffer, BUFFER_SIZE);
 	int n = recv(newsockfd, buffer, BUFFER_SIZE-1, 0);
 	if(n < 0){ fprintf(stderr, "Error: Cannot read from socket\n"); exit(1);}
 }
 
 //Sends a message back to the client
-void SendServer(int newsockfd, char buffer[]){
+void SendMsg(int newsockfd, char buffer[]){
 	int n = send(newsockfd, buffer, BUFFER_SIZE, 0);
 	if(n < 0){
 		fprintf(stderr, "Error: Could not send message"); exit(1);
