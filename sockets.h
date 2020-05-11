@@ -18,8 +18,6 @@
 
 int CreateClient(char* argv[]);
 
-int CreateServer(int argc, char* argv[]);
+int CreateServer(char* argv[]);
 
 void ReceiveServer(char buffer[], int newsockfd);
-
-void SendServer(int newsockfd, char buffer[]);
