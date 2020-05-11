@@ -48,7 +48,7 @@ int CreateServer(char* argv[]){
 }
 
 //Receives a message from the client
-void ReceiveServer(char buffer[], int newsockfd){
+void ReceiveServer(int newsockfd, char buffer[]){
 	bzero(buffer, BUFFER_SIZE);
 	int n = recv(newsockfd, buffer, BUFFER_SIZE-1, 0);
 	if(n < 0){ fprintf(stderr, "Error: Cannot read from socket\n"); exit(1);}
