@@ -9,6 +9,7 @@
 
 int main(int argc, char* argv[]){
 	int sockfd;
+	//Run server version before client version to connect properly
 	if(argc == 2){
 		sockfd = CreateServer(argv);
 	}
