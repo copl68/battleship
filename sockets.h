@@ -4,7 +4,10 @@
  * File: Sockets.h
  * Description: The header file which imports the necessary libraries and declares the functions
  **/
-#include <netdb.h>
+#include<time.h>
+#include<signal.h>
+#include<sense/sense.h>
+#include<netdb.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/types.h>
