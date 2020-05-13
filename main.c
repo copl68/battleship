@@ -111,8 +111,8 @@ int main(int argc, char* argv[]){
 		//Sevrer
 		sockfd = CreateServer(argv);
 		setPiece(myScreen, 2);
-		setPiece(myScreen, 4);
-		setPiece(myScreen, 6);
+		setPiece(myScreen, 3);
+		setPiece(myScreen, 5);
 		displayScreen(myScreen);
 		sleep(2);
 		displayScreen(yourScreen);
@@ -121,8 +121,8 @@ int main(int argc, char* argv[]){
 		//Client
 		sockfd = CreateClient(argv);
 		setPiece(myScreen, 2);
-		setPiece(myScreen, 4);
-		setPiece(myScreen, 6);
+		setPiece(myScreen, 3);
+		setPiece(myScreen, 5);
 		displayScreen(myScreen);
 	}
 	else{
