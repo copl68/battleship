@@ -105,29 +105,25 @@ int main(int argc, char* argv[]){
 			yourScreen[i][j] = blank;
 		}
 	}
-
-	setPiece(myScreen, 2);
-	setPiece(myScreen, 4);
-	setPiece(myScreen, 6);
-	setPiece(yourScreen, 2);
-	setPiece(yourScreen, 4);
-	setPiece(yourScreen, 6);
-
-	//Used for testing.... will show both screens .... delete whenever
-	while(1){
-		displayScreen(myScreen);
-		sleep(3);
-		displayScreen(yourScreen);
-		sleep(3);
-	}
-
 	
 	//Run server version before client version to connect properly
 	if(argc == 2){
+		//Sevrer
 		sockfd = CreateServer(argv);
+		setPiece(myScreen, 2);
+		setPiece(myScreen, 4);
+		setPiece(myScreen, 6);
+		displayScreen(myScreen);
+		sleep(2);
+		displayScreen(yourScreen);
 	}
 	else if(argc == 3){
+		//Client
 		sockfd = CreateClient(argv);
+		setPiece(myScreen, 2);
+		setPiece(myScreen, 4);
+		setPiece(myScreen, 6);
+		displayScreen(myScreen);
 	}
 	else{
 		fprintf(stderr, "\nInvalid Use...\nServer use: ./final <port>\nClient use: ./final <port> <server_name>\n\n");
