@@ -8,10 +8,15 @@
 
 int * missilePtr;
 int sockfd;
+int target_x = 0; 
+int target_y = 0;
+int white;
 int red;
 int green;
 int blue;
 int blank;
+int myScreen[8][8];
+int yourScreen[8][8];
 pi_framebuffer_t* fb;
 
 //Displays the array passed to it onto the framebuffer
@@ -90,7 +95,7 @@ void setPiece(int screen[8][8], int len){
 	}
 }
 
-bool playGame(int myScreen[8][8], int yourScreen[8][8]){
+bool playGame(){
 	int countShips = 0;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
@@ -130,15 +135,14 @@ bool playGame(int myScreen[8][8], int yourScreen[8][8]){
 }
 
 void callbackFn(unsigned int code){
-	printf("%d\n", *missilePtr);
-	*missilePtr = 1;
+	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);  
 }
 
 void sendMissile(){
 	pi_joystick_t* joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
-	while(1){
+	while(!(missileSent)){
 		pollJoystick(joystick, callbackFn, 1000);
 	}
 }
@@ -146,6 +150,7 @@ void sendMissile(){
 int main(int argc, char* argv[]){
 	sendMissile();
 	signal(SIGINT, interrupt_handler);
+	white = getColor(255,255,255);
 	red = getColor(255,0,0);
 	green = getColor(0,255,0);
 	blue = getColor(0,0,255);
@@ -153,8 +158,6 @@ int main(int argc, char* argv[]){
 	fb = getFBDevice();
 	
 	srand(time(0));
-	int myScreen[8][8];
-	int yourScreen[8][8];
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
 			myScreen[i][j] = blank;
@@ -187,7 +190,7 @@ int main(int argc, char* argv[]){
 	}	
 
 	//game loop
-	while(playGame(myScreen, yourScreen)){
+	while(playGame()){
 		//recv missile
 		//send if it hit
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
