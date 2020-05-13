@@ -47,7 +47,7 @@ void setPiece(int screen[8][8], int len){
 	int xpos = rand() % 8;
 	int ypos = rand() % 8;
 	int dir = rand() % 3; 
-
+	
 	//Dir meanings
 	//0 - Up
 	//1 - Down
@@ -135,7 +135,25 @@ bool playGame(){
 }
 
 void callbackFn(unsigned int code){
-	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);  
+	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
+	switch(code){
+		case KEY_UP:
+			target_y=target_y==0?7:target_y-1;
+			break;
+		case KEY_DOWN: 
+			target_y=target_y==7?0:target_y+1;
+			break;
+		case KEY_RIGHT:
+			target_x=target_x==7?0:target_x+1;
+			break;
+		case KEY_LEFT:
+			target_x=target_x==0?7:target_x-1;
+			break;
+		default:
+			//send coordinates here
+			*missilePtr = 1;
+	}	
+	setPixel(fb->bitmap, target_x, target_y, green);
 }
 
 void sendMissile(){
@@ -143,12 +161,12 @@ void sendMissile(){
 	int missileSent = 0;
 	missilePtr = &missileSent;
 	while(!(missileSent)){
+		setPixel(fb->bitmap, target_x, target_y, green);
 		pollJoystick(joystick, callbackFn, 1000);
 	}
 }
 
 int main(int argc, char* argv[]){
-	sendMissile();
 	signal(SIGINT, interrupt_handler);
 	white = getColor(255,255,255);
 	red = getColor(255,0,0);
@@ -164,7 +182,14 @@ int main(int argc, char* argv[]){
 			yourScreen[i][j] = blank;
 		}
 	}
-	
+
+	//TESTING SEND MISSILE
+	setPiece(yourScreen, 2);
+	setPiece(yourScreen, 4);
+	setPiece(yourScreen, 6);
+	displayScreen(yourScreen);
+	sendMissile();
+
 	//Run server version before client version to connect properly
 	if(argc == 2){
 		//Sevrer

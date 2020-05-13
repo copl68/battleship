@@ -4,6 +4,7 @@
  * File: Sockets.h
  * Description: The header file which imports the necessary libraries and declares the functions
  **/
+#include<linux/input.h>
 #include<stdbool.h>
 #include<time.h>
 #include<signal.h>
