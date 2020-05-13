@@ -6,6 +6,7 @@
 
 #include "sockets.h"
 
+int sockfd;
 int red;
 int green;
 int blue;
@@ -24,6 +25,7 @@ void displayScreen(int screen[8][8]){
 
 //Quits the program and cleans up any memory when the user types CTRL+C
 void interrupt_handler(int sig){
+	close(sockfd);
 	clearBitmap(fb->bitmap, blank);
 	freeFrameBuffer(fb);
 	exit(0);
@@ -87,9 +89,47 @@ void setPiece(int screen[8][8], int len){
 	}
 }
 
+bool playGame(int myScreen[8][8], int yourScreen[8][8]){
+	int countShips = 0;
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			if(myScreen[i][j] == blue){
+				countShips++;
+			}	
+		}
+	}
+	if(!countShips){
+		//You have no more ships afloat
+		//Tell other player they won and quit
+		SendMsg(sockfd, "You win");
+		printf("You lose...");
+		interrupt_handler(2);	
+
+	}
+	else{
+		//You still have ships afloat
+		countShips = 0;
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				if(yourScreen[i][j] == red){
+					countShips++;
+				}
+			}
+		}
+		if(countShips == 10){
+			SendMsg(sockfd, "I win");
+			printf("You win!");
+			interrupt_handler(2);
+		}
+		else{
+			SendMsg(sockfd, "play");
+			return true;
+		}
+	}
+}
+
 int main(int argc, char* argv[]){
 	signal(SIGINT, interrupt_handler);
-	int sockfd;
 	red = getColor(255,0,0);
 	green = getColor(0,255,0);
 	blue = getColor(0,0,255);
@@ -129,5 +169,16 @@ int main(int argc, char* argv[]){
 		fprintf(stderr, "\nInvalid Use...\nServer use: ./final <port>\nClient use: ./final <port> <server_name>\n\n");
 		exit(0);
 	}	
+
+	//game loop
+	while(playGame(myScreen, yourScreen)){
+		//recv missile
+		//send if it hit
+		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
+		//if message says game is over, end game. If not, keep goinf
+		//display opponent board
+		//send missile
+		//recv if it hit
+	}
 
 }
