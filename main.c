@@ -6,6 +6,7 @@
 
 #include "sockets.h"
 
+int * missilePtr;
 int sockfd;
 int red;
 int green;
@@ -128,7 +129,22 @@ bool playGame(int myScreen[8][8], int yourScreen[8][8]){
 	}
 }
 
+void callbackFn(unsigned int code){
+	printf("%d\n", *missilePtr);
+	*missilePtr = 1;
+}
+
+void sendMissile(){
+	pi_joystick_t* joystick = getJoystickDevice();
+	int missileSent = 0;
+	missilePtr = &missileSent;
+	while(1){
+		pollJoystick(joystick, callbackFn, 1000);
+	}
+}
+
 int main(int argc, char* argv[]){
+	sendMissile();
 	signal(SIGINT, interrupt_handler);
 	red = getColor(255,0,0);
 	green = getColor(0,255,0);
