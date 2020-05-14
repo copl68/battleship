@@ -160,6 +160,7 @@ void sendMissile(){
 	pi_joystick_t* joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
+	displayScreen(yourScreen);
 	while(!(missileSent)){
 		setPixel(fb->bitmap, target_x, target_y, green);
 		pollJoystick(joystick, callbackFn, 1000);
@@ -187,7 +188,6 @@ int main(int argc, char* argv[]){
 	setPiece(yourScreen, 2);
 	setPiece(yourScreen, 4);
 	setPiece(yourScreen, 6);
-	displayScreen(yourScreen);
 	sendMissile();
 
 	//Run server version before client version to connect properly
@@ -199,7 +199,6 @@ int main(int argc, char* argv[]){
 		setPiece(myScreen, 5);
 		displayScreen(myScreen);
 		sleep(2);
-		displayScreen(yourScreen);
 	}
 	else if(argc == 3){
 		//Client
