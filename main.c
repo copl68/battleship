@@ -244,7 +244,9 @@ int main(int argc, char* argv[]){
 		setPiece(myScreen, 5);
 		displayScreen(myScreen);
 		sleep(2);
+		recvGameplayMsg();
 		sendMissile();
+		recvIfHit();
 	}
 	else if(argc == 3){
 		//Client
