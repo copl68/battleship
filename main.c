@@ -136,6 +136,8 @@ bool playGame(){
 
 void callbackFn(unsigned int code){
 	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
+	char x[3];
+	char y[3];
 	switch(code){
 		case KEY_UP:
 			target_y=target_y==0?7:target_y-1;
@@ -150,7 +152,10 @@ void callbackFn(unsigned int code){
 			target_x=target_x==0?7:target_x-1;
 			break;
 		default:
-			//send coordinates here
+			sprintf(x, "%d", target_x);
+			sprintf(y, "%d", target_y);
+			SendMsg(sockfd, x);
+			SendMsg(sockfd, y);
 			*missilePtr = 1;
 	}	
 	setPixel(fb->bitmap, target_x, target_y, green);
@@ -165,6 +170,26 @@ void sendMissile(){
 		setPixel(fb->bitmap, target_x, target_y, green);
 		pollJoystick(joystick, callbackFn, 1000);
 	}
+}
+
+void recvMissile(){
+	char buffer[BUFFER_SIZE];
+	RecvMsg(sockfd, buffer);
+	target_x = atoi(buffer);
+	RecvMsg(sockfd, buffer);
+	target_y = atoi(buffer);
+	if(myScreen[target_x][target_y] = blue){
+		myScreen[target_x][target_y] = red;
+		SendMsg(sockfd, "hit");
+	}
+	else{
+		myScreen[target_x][target_y] = white;
+		SendMsg(sockfd, "miss");
+	}
+}
+
+void recvGameplayMsg(){
+	
 }
 
 int main(int argc, char* argv[]){
@@ -192,13 +217,14 @@ int main(int argc, char* argv[]){
 
 	//Run server version before client version to connect properly
 	if(argc == 2){
-		//Sevrer
+		//Server
 		sockfd = CreateServer(argv);
 		setPiece(myScreen, 2);
 		setPiece(myScreen, 3);
 		setPiece(myScreen, 5);
 		displayScreen(myScreen);
 		sleep(2);
+		sendMissile();
 	}
 	else if(argc == 3){
 		//Client
