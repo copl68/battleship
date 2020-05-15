@@ -18,6 +18,8 @@ int blank;
 int myScreen[8][8];
 int yourScreen[8][8];
 pi_framebuffer_t* fb;
+pi_joystick_t* joystick;
+char buffer[BUFFER_SIZE];
 
 //Displays the array passed to it onto the framebuffer
 void displayScreen(int screen[8][8]){
@@ -34,6 +36,7 @@ void interrupt_handler(int sig){
 	close(sockfd);
 	clearBitmap(fb->bitmap, blank);
 	freeFrameBuffer(fb);
+	freeJoystick(joystick);
 	exit(0);
 }
 
@@ -108,7 +111,7 @@ bool playGame(){
 		//You have no more ships afloat
 		//Tell other player they won and quit
 		SendMsg(sockfd, "You win");
-		printf("You lose...");
+		printf("You lose...\n");
 		interrupt_handler(2);	
 
 	}
@@ -123,8 +126,8 @@ bool playGame(){
 			}
 		}
 		if(countShips == 10){
-			SendMsg(sockfd, "I win");
-			printf("You win!");
+			SendMsg(sockfd, "You lose");
+			printf("You win!\n");
 			interrupt_handler(2);
 		}
 		else{
@@ -162,7 +165,7 @@ void callbackFn(unsigned int code){
 }
 
 void sendMissile(){
-	pi_joystick_t* joystick = getJoystickDevice();
+	joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
 	displayScreen(yourScreen);
@@ -173,7 +176,6 @@ void sendMissile(){
 }
 
 void recvMissile(){
-	char buffer[BUFFER_SIZE];
 	RecvMsg(sockfd, buffer);
 	target_x = atoi(buffer);
 	RecvMsg(sockfd, buffer);
@@ -189,7 +191,15 @@ void recvMissile(){
 }
 
 void recvGameplayMsg(){
-	
+	RecvMsg(sockfd, buffer);
+	if(strcmp(buffer, "You lose")){
+		printf("You lose...\n");
+		interrupt_handler(2);
+	}
+	else if(strcmp(buffer, "You win")){
+		printf("You win!\n");
+		interrupt_handler(2);
+	}
 }
 
 int main(int argc, char* argv[]){
@@ -200,6 +210,7 @@ int main(int argc, char* argv[]){
 	blue = getColor(0,0,255);
 	blank = getColor(0,0,0);
 	fb = getFBDevice();
+
 	
 	srand(time(0));
 	for(int i = 0; i < 8; i++){
@@ -241,9 +252,10 @@ int main(int argc, char* argv[]){
 
 	//game loop
 	while(playGame()){
-		//recv missile
-		//send if it hit
+		recvMissile();
+
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
+		recvGameplayMsg();
 		//if message says game is over, end game. If not, keep goinf
 		//display opponent board
 		//send missile
