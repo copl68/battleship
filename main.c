@@ -194,17 +194,17 @@ void recvMissile(){
 
 void recvGameplayMsg(){
 	RecvMsg(sockfd, buffer);
-	printf("Msg: %s", buffer);
-	if(strcmp(buffer, "You lose")){
+	printf("Msg: %s\n", buffer);
+	if(strcmp(buffer, "play")){
+		return;
+	}
+	else if(strcmp(buffer, "You lose")){
 		printf("You lose...\n");
 		interrupt_handler(2);
 	}
 	else if(strcmp(buffer, "You win")){
 		printf("You win!\n");
 		interrupt_handler(2);
-	}
-	else if(strcmp(buffer, "play")){
-		return;
 	}
 }
 
