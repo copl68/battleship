@@ -195,16 +195,16 @@ void recvMissile(){
 void recvGameplayMsg(){
 	RecvMsg(sockfd, buffer);
 	printf("Msg: %s\n", buffer);
-	if(strncmp(buffer, "play", 4)){
+	if(strncmp(buffer, "play", 4) == 0){
 		printf("PLAY\n");
 		return;
 	}
-	else if(strncmp(buffer, "You lose", 8)){
+	else if(strncmp(buffer, "You lose", 8) == 0){
 		printf("LOST\n");
 		printf("You lose...\n");
 		interrupt_handler(2);
 	}
-	else if(strncmp(buffer, "You win", 7)){
+	else if(strncmp(buffer, "You win", 7) == 0){
 		printf("WIN!!\n");
 		printf("You win!\n");
 		interrupt_handler(2);
@@ -245,7 +245,6 @@ int main(int argc, char* argv[]){
 	//Run server version before client version to connect properly
 	if(argc == 2){
 		//Server
-		printf("You are server\n");
 		sockfd = CreateServer(argv);
 		setPiece(myScreen, 2);
 		setPiece(myScreen, 3);
@@ -258,7 +257,6 @@ int main(int argc, char* argv[]){
 	}
 	else if(argc == 3){
 		//Client
-		printf("You are client\n");
 		sockfd = CreateClient(argv);
 		setPiece(myScreen, 2);
 		setPiece(myScreen, 3);
@@ -271,9 +269,7 @@ int main(int argc, char* argv[]){
 	}
 
 	//game loop
-	bool playing = playGame();
-	printf("BEFORE LOOP\n");
-	while(playing){
+	while(playGame()){
 		recvMissile();
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
