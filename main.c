@@ -269,7 +269,9 @@ int main(int argc, char* argv[]){
 	}
 
 	//game loop
-	while(playGame()){
+	bool playing = playGame();
+	printf("BEFORE LOOP\n");
+	while(playing){
 		recvMissile();
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
