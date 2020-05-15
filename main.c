@@ -155,6 +155,8 @@ void callbackFn(unsigned int code){
 			target_x=target_x==0?7:target_x-1;
 			break;
 		default:
+			printf("x-coord: %d\n", target_x);
+			printf("y-coord: %d\n", target_y);
 			sprintf(x, "%d", target_x);
 			sprintf(y, "%d", target_y);
 			SendMsg(sockfd, x);
@@ -194,18 +196,14 @@ void recvMissile(){
 
 void recvGameplayMsg(){
 	RecvMsg(sockfd, buffer);
-	printf("Msg: %s\n", buffer);
 	if(strncmp(buffer, "play", 4) == 0){
-		printf("PLAY\n");
 		return;
 	}
 	else if(strncmp(buffer, "You lose", 8) == 0){
-		printf("LOST\n");
 		printf("You lose...\n");
 		interrupt_handler(2);
 	}
 	else if(strncmp(buffer, "You win", 7) == 0){
-		printf("WIN!!\n");
 		printf("You win!\n");
 		interrupt_handler(2);
 	}
@@ -213,10 +211,10 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
-	if(strcmp(buffer, "hit")){
+	if(strcmp(buffer, "hit") == 0){
 		printf("You hit a ship!");
 	}
-	else if(strcmp(buffer, "miss")){
+	else if(strcmp(buffer, "miss") == 0){
 		printf("You missed");
 	}
 	else{
@@ -271,6 +269,7 @@ int main(int argc, char* argv[]){
 	//game loop
 	while(playGame()){
 		recvMissile();
+		sleep(1);
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
 		//if message says game is over, end game. If not, keep going
