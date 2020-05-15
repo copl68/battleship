@@ -257,7 +257,7 @@ int main(int argc, char* argv[]){
 	else{
 		fprintf(stderr, "\nInvalid Use...\nServer use: ./final <port>\nClient use: ./final <port> <server_name>\n\n");
 		exit(0);
-	}	
+	}
 
 	//game loop
 	while(playGame()){
