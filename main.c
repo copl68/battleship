@@ -196,13 +196,16 @@ void recvGameplayMsg(){
 	RecvMsg(sockfd, buffer);
 	printf("Msg: %s\n", buffer);
 	if(strncmp(buffer, "play", 4)){
+		printf("PLAY\n");
 		return;
 	}
 	else if(strncmp(buffer, "You lose", 8)){
+		printf("LOST\n");
 		printf("You lose...\n");
 		interrupt_handler(2);
 	}
 	else if(strncmp(buffer, "You win", 7)){
+		printf("WIN!!\n");
 		printf("You win!\n");
 		interrupt_handler(2);
 	}
