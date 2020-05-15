@@ -203,6 +203,9 @@ void recvGameplayMsg(){
 		printf("You win!\n");
 		interrupt_handler(2);
 	}
+	else if(strcmp(buffer, "play")){
+		return;
+	}
 }
 
 void recvIfHit(){
