@@ -245,6 +245,7 @@ int main(int argc, char* argv[]){
 	//Run server version before client version to connect properly
 	if(argc == 2){
 		//Server
+		printf("You are server\n");
 		sockfd = CreateServer(argv);
 		setPiece(myScreen, 2);
 		setPiece(myScreen, 3);
@@ -257,6 +258,7 @@ int main(int argc, char* argv[]){
 	}
 	else if(argc == 3){
 		//Client
+		printf("You are client\n");
 		sockfd = CreateClient(argv);
 		setPiece(myScreen, 2);
 		setPiece(myScreen, 3);
