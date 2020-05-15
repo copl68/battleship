@@ -173,9 +173,11 @@ void sendMissile(){
 		setPixel(fb->bitmap, target_x, target_y, green);
 		pollJoystick(joystick, callbackFn, 1000);
 	}
+	usleep(500000);
 }
 
 void recvMissile(){
+	displayScreen(myScreen);
 	RecvMsg(sockfd, buffer);
 	target_x = atoi(buffer);
 	RecvMsg(sockfd, buffer);
@@ -202,6 +204,19 @@ void recvGameplayMsg(){
 	}
 }
 
+void recvIfHit(){
+	RecvMsg(sockfd, buffer);
+	if(strcmp(buffer, "hit")){
+		printf("You hit a ship!");
+	}
+	else if(strcmp(buffer, "miss")){
+		printf("You missed");
+	}
+	else{
+		printf("Error receiving if hit...\n");
+	}
+}
+
 int main(int argc, char* argv[]){
 	signal(SIGINT, interrupt_handler);
 	white = getColor(255,255,255);
@@ -219,12 +234,6 @@ int main(int argc, char* argv[]){
 			yourScreen[i][j] = blank;
 		}
 	}
-
-	//TESTING SEND MISSILE
-	setPiece(yourScreen, 2);
-	setPiece(yourScreen, 4);
-	setPiece(yourScreen, 6);
-	sendMissile();
 
 	//Run server version before client version to connect properly
 	if(argc == 2){
@@ -255,11 +264,10 @@ int main(int argc, char* argv[]){
 		recvMissile();
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
+		//if message says game is over, end game. If not, keep going
 		recvGameplayMsg();
-		//if message says game is over, end game. If not, keep goinf
-		//display opponent board
-		//send missile
-		//recv if it hit
+		sendMissile();
+		recvIfHit();
 	}
 
 }
