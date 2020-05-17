@@ -181,9 +181,11 @@ void sendMissile(){
 void recvMissile(){
 	displayScreen(myScreen);
 	RecvMsg(sockfd, buffer);
+	printf("X BEFORE ATOI: %s\n", buffer);
 	target_x = atoi(buffer);
 	printf("X RECV: %d\n", target_x);
 	RecvMsg(sockfd, buffer);
+	printf("Y BEFORE ATOI: %s\n", buffer);
 	target_y = atoi(buffer);
 	printf("Y RECV: %d\n", target_y);
 	if(myScreen[target_x][target_y] == blue){
