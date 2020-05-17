@@ -60,7 +60,6 @@ void RecvMsg(int newsockfd, char buffer[]){
 void SendMsg(int newsockfd, char buffer[]){
 	int n = send(newsockfd, buffer, BUFFER_SIZE, 0);
 	printf("Sending: %s\n", buffer);
-	bzero(buffer, BUFFER_SIZE);
 	if(n < 0){
 		fprintf(stderr, "Error: Could not send message"); exit(1);
 	}
