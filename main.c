@@ -160,6 +160,7 @@ void callbackFn(unsigned int code){
 			sprintf(x, "%d", target_x);
 			sprintf(y, "%d", target_y);
 			SendMsg(sockfd, x);
+			usleep(100000);
 			SendMsg(sockfd, y);
 			bzero(x, 10);
 			bzero(y, 10);
