@@ -139,8 +139,8 @@ bool playGame(){
 
 void callbackFn(unsigned int code){
 	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
-	char x[3];
-	char y[3];
+	char x[10];
+	char y[10];
 	switch(code){
 		case KEY_UP:
 			target_y=target_y==0?7:target_y-1;
@@ -161,6 +161,8 @@ void callbackFn(unsigned int code){
 			sprintf(y, "%d", target_y);
 			SendMsg(sockfd, x);
 			SendMsg(sockfd, y);
+			bzero(x, 10);
+			bzero(y, 10);
 			*missilePtr = 1;
 	}	
 	setPixel(fb->bitmap, target_x, target_y, green);
@@ -215,7 +217,7 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
-	printf("BUFFER: %s\n", buffer);
+	printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
 		printf("You hit a ship!");
 	}
