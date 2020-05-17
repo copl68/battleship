@@ -100,6 +100,7 @@ void setPiece(int screen[8][8], int len){
 }
 
 bool playGame(){
+	printf("-----In playGame()-----\n");
 	int countShips = 0;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
@@ -173,6 +174,7 @@ void callbackFn(unsigned int code){
 }
 
 void sendMissile(){
+	printf("-----In sendMissile()-----\n");
 	joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
@@ -186,6 +188,7 @@ void sendMissile(){
 }
 
 void recvMissile(){
+	printf("-----In recvMissile()-----\n");
 	sleep(1);
 	displayScreen(myScreen);
 	
@@ -219,6 +222,7 @@ void recvMissile(){
 }
 
 void recvGameplayMsg(){
+	printf("-----In recvGameplayMsg()-----\n");
 	RecvMsg(sockfd, buffer);
 	if(strncmp(buffer, "play", 4) == 0){
 		return;
@@ -234,6 +238,7 @@ void recvGameplayMsg(){
 }
 
 void recvIfHit(){
+	printf("------In recvIfHit()-----\n");
 	RecvMsg(sockfd, buffer);
 	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
@@ -279,6 +284,7 @@ int main(int argc, char* argv[]){
 		recvGameplayMsg();
 		sendMissile();
 		recvIfHit();
+		printf("Exiting server if\n");
 	}
 	else if(argc == 3){
 		//Client
@@ -287,6 +293,7 @@ int main(int argc, char* argv[]){
 		setPiece(myScreen, 3);
 		setPiece(myScreen, 5);
 		displayScreen(myScreen);
+		printf("Exiting client if\n");
 	}
 	else{
 		fprintf(stderr, "\nInvalid Use...\nServer use: ./final <port>\nClient use: ./final <port> <server_name>\n\n");
@@ -295,6 +302,7 @@ int main(int argc, char* argv[]){
 
 	//game loop
 	while(playGame()){
+		printf("Starting while loop\n");
 		recvMissile();
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
