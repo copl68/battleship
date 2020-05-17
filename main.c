@@ -212,13 +212,11 @@ void recvMissile(){
 	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
 		strcpy(buffer, "hit");
-		sleep(1);
 		SendMsg(sockfd, buffer);
 	}
 	else{
 		myScreen[target_x][target_y] = white;
 		strcpy(buffer, "miss");
-		sleep(1);
 		SendMsg(sockfd, buffer);
 	}
 }
@@ -241,6 +239,7 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	printf("------In recvIfHit()-----\n");
+	usleep(500000);
 	RecvMsg(sockfd, buffer);
 	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
