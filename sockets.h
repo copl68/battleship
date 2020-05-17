@@ -17,7 +17,7 @@
 #include<netinet/in.h>
 #include<string.h>
 #include<unistd.h>
-#define BUFFER_SIZE 200
+#define BUFFER_SIZE 20
 
 //Method descriptions in sockets.c
 
