@@ -239,7 +239,6 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	printf("------In recvIfHit()-----\n");
-	usleep(500000);
 	RecvMsg(sockfd, buffer);
 	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
@@ -251,7 +250,8 @@ void recvIfHit(){
 		printf("You missed");
 	}
 	else{
-		printf("Error receiving if hit...\n");
+		printf("Error receiving if hit...\nCalling again...\n");
+		recvIfHit();
 	}
 }
 
