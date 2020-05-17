@@ -211,10 +211,11 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
-	if(strcmp(buffer, "hit") == 0){
+	printf("BUFFER: %s", buffer);
+	if(strncmp(buffer, "hit", 3) == 0){
 		printf("You hit a ship!");
 	}
-	else if(strcmp(buffer, "miss") == 0){
+	else if(strncmp(buffer, "miss", 4) == 0){
 		printf("You missed");
 	}
 	else{
