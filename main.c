@@ -108,10 +108,12 @@ bool playGame(){
 			}	
 		}
 	}
+	bzero(buffer, BUFFER_SIZE);
 	if(!countShips){
 		//You have no more ships afloat
 		//Tell other player they won and quit
-		SendMsg(sockfd, "You win");
+		strcpy(buffer, "You win");
+		SendMsg(sockfd, buffer);
 		printf("You lose...\n");
 		interrupt_handler(2);	
 
@@ -127,12 +129,14 @@ bool playGame(){
 			}
 		}
 		if(countShips == 10){
-			SendMsg(sockfd, "You lose");
+			strcpy(buffer, "You lose");
+			SendMsg(sockfd, buffer);
 			printf("You win!\n");
 			interrupt_handler(2);
 		}
 		else{
-			SendMsg(sockfd, "play");
+			strcpy(buffer, "play");
+			SendMsg(sockfd, buffer);
 			return true;
 		}
 	}
@@ -159,7 +163,9 @@ void callbackFn(unsigned int code){
 			//printf("y-coord: %d\n", target_y);
 		        coord_num = 10*target_x + target_y;
 			sprintf(coord, "%d", coord_num);
-			SendMsg(sockfd, coord);
+			bzero(buffer, BUFFER_SIZE);
+			strcpy(buffer, coord);
+			SendMsg(sockfd, buffer);
 			bzero(coord, 10);
 			*missilePtr = 1;
 	}	
@@ -170,6 +176,7 @@ void sendMissile(){
 	joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
+	sleep(1);
 	displayScreen(yourScreen);
 	while(!(missileSent)){
 		setPixel(fb->bitmap, target_x, target_y, green);
@@ -179,6 +186,7 @@ void sendMissile(){
 }
 
 void recvMissile(){
+	sleep(1);
 	displayScreen(myScreen);
 	
 	/*
@@ -200,11 +208,13 @@ void recvMissile(){
 	printf("Y RECV: %d\n", target_y);
 	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
-		SendMsg(sockfd, "hit");
+		strcpy(buffer, "hit");
+		SendMsg(sockfd, buffer);
 	}
 	else{
 		myScreen[target_x][target_y] = white;
-		SendMsg(sockfd, "miss");
+		strcpy(buffer, "miss");
+		SendMsg(sockfd, buffer);
 	}
 }
 
@@ -227,9 +237,11 @@ void recvIfHit(){
 	RecvMsg(sockfd, buffer);
 	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
+		yourScreen[target_x][target_y] = red;
 		printf("You hit a ship!");
 	}
 	else if(strncmp(buffer, "miss", 4) == 0){
+		yourScreen[target_x][target_y] = white;
 		printf("You missed");
 	}
 	else{
@@ -284,7 +296,6 @@ int main(int argc, char* argv[]){
 	//game loop
 	while(playGame()){
 		recvMissile();
-		sleep(1);
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
 		//if message says game is over, end game. If not, keep going
