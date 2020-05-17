@@ -182,9 +182,11 @@ void recvMissile(){
 	displayScreen(myScreen);
 	RecvMsg(sockfd, buffer);
 	target_x = atoi(buffer);
+	printf("X RECV: %d\n", target_x);
 	RecvMsg(sockfd, buffer);
 	target_y = atoi(buffer);
-	if(myScreen[target_x][target_y] = blue){
+	printf("Y RECV: %d\n", target_y);
+	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
 		SendMsg(sockfd, "hit");
 	}
@@ -211,7 +213,7 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
-	printf("BUFFER: %s", buffer);
+	printf("BUFFER: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
 		printf("You hit a ship!");
 	}
