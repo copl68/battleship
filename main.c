@@ -17,6 +17,8 @@ int blue;
 int blank;
 int myScreen[8][8];
 int yourScreen[8][8];
+char x[10];
+char y[10];
 pi_framebuffer_t* fb;
 pi_joystick_t* joystick;
 char buffer[BUFFER_SIZE];
@@ -139,8 +141,6 @@ bool playGame(){
 
 void callbackFn(unsigned int code){
 	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
-	char x[10];
-	char y[10];
 	switch(code){
 		case KEY_UP:
 			target_y=target_y==0?7:target_y-1;
@@ -160,9 +160,9 @@ void callbackFn(unsigned int code){
 			sprintf(x, "%d", target_x);
 			sprintf(y, "%d", target_y);
 			SendMsg(sockfd, x);
+			bzero(x, 10);
 			usleep(100000);
 			SendMsg(sockfd, y);
-			bzero(x, 10);
 			bzero(y, 10);
 			*missilePtr = 1;
 	}	
