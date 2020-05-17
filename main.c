@@ -17,8 +17,7 @@ int blue;
 int blank;
 int myScreen[8][8];
 int yourScreen[8][8];
-char x[10];
-char y[10];
+char coord[10];
 pi_framebuffer_t* fb;
 pi_joystick_t* joystick;
 char buffer[BUFFER_SIZE];
@@ -140,6 +139,7 @@ bool playGame(){
 }
 
 void callbackFn(unsigned int code){
+	int coord_num;
 	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
 	switch(code){
 		case KEY_UP:
@@ -157,13 +157,10 @@ void callbackFn(unsigned int code){
 		default:
 			//printf("x-coord: %d\n", target_x);
 			//printf("y-coord: %d\n", target_y);
-			sprintf(x, "%d", target_x);
-			sprintf(y, "%d", target_y);
-			SendMsg(sockfd, x);
-			bzero(x, 10);
-			usleep(100000);
-			SendMsg(sockfd, y);
-			bzero(y, 10);
+		        coord_num = 10*target_x + target_y;
+			sprintf(coord, "%d", coord_num);
+			SendMsg(sockfd, coord);
+			bzero(coord, 10);
 			*missilePtr = 1;
 	}	
 	setPixel(fb->bitmap, target_x, target_y, green);
@@ -183,6 +180,8 @@ void sendMissile(){
 
 void recvMissile(){
 	displayScreen(myScreen);
+	
+	/*
 	RecvMsg(sockfd, buffer);
 	//printf("X BEFORE ATOI: %s\n", buffer);
 	target_x = atoi(buffer);
@@ -191,6 +190,14 @@ void recvMissile(){
 	//printf("Y BEFORE ATOI: %s\n", buffer);
 	target_y = atoi(buffer);
 	//printf("Y RECV: %d\n", target_y);
+	*/
+	RecvMsg(sockfd, buffer);
+	int coord_num;
+        coord_num = atoi(buffer);
+	target_x = coord_num / 10;
+	printf("X RECV: %d\n", target_x);
+	target_y = coord_num % 10;
+	printf("Y RECV: %d\n", target_y);
 	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
 		SendMsg(sockfd, "hit");
