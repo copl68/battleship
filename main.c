@@ -155,8 +155,8 @@ void callbackFn(unsigned int code){
 			target_x=target_x==0?7:target_x-1;
 			break;
 		default:
-			printf("x-coord: %d\n", target_x);
-			printf("y-coord: %d\n", target_y);
+			//printf("x-coord: %d\n", target_x);
+			//printf("y-coord: %d\n", target_y);
 			sprintf(x, "%d", target_x);
 			sprintf(y, "%d", target_y);
 			SendMsg(sockfd, x);
@@ -183,13 +183,13 @@ void sendMissile(){
 void recvMissile(){
 	displayScreen(myScreen);
 	RecvMsg(sockfd, buffer);
-	printf("X BEFORE ATOI: %s\n", buffer);
+	//printf("X BEFORE ATOI: %s\n", buffer);
 	target_x = atoi(buffer);
-	printf("X RECV: %d\n", target_x);
+	//printf("X RECV: %d\n", target_x);
 	RecvMsg(sockfd, buffer);
-	printf("Y BEFORE ATOI: %s\n", buffer);
+	//printf("Y BEFORE ATOI: %s\n", buffer);
 	target_y = atoi(buffer);
-	printf("Y RECV: %d\n", target_y);
+	//printf("Y RECV: %d\n", target_y);
 	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
 		SendMsg(sockfd, "hit");
@@ -217,7 +217,7 @@ void recvGameplayMsg(){
 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
-	printf("MSG IF HIT: %s\n", buffer);
+	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
 		printf("You hit a ship!");
 	}
