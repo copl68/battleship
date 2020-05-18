@@ -100,7 +100,6 @@ void setPiece(int screen[8][8], int len){
 }
 
 bool playGame(){
-	printf("-----In playGame()-----\n");
 	int countShips = 0;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
@@ -160,8 +159,6 @@ void callbackFn(unsigned int code){
 			target_x=target_x==0?7:target_x-1;
 			break;
 		default:
-			//printf("x-coord: %d\n", target_x);
-			//printf("y-coord: %d\n", target_y);
 		        coord_num = 10*target_x + target_y;
 			sprintf(coord, "%d", coord_num);
 			bzero(buffer, BUFFER_SIZE);
@@ -174,7 +171,6 @@ void callbackFn(unsigned int code){
 }
 
 void sendMissile(){
-	printf("-----In sendMissile()-----\n");
 	joystick = getJoystickDevice();
 	int missileSent = 0;
 	missilePtr = &missileSent;
@@ -188,27 +184,13 @@ void sendMissile(){
 }
 
 void recvMissile(){
-	printf("-----In recvMissile()-----\n");
 	sleep(1);
 	displayScreen(myScreen);
-	
-	/*
-	RecvMsg(sockfd, buffer);
-	//printf("X BEFORE ATOI: %s\n", buffer);
-	target_x = atoi(buffer);
-	//printf("X RECV: %d\n", target_x);
-	RecvMsg(sockfd, buffer);
-	//printf("Y BEFORE ATOI: %s\n", buffer);
-	target_y = atoi(buffer);
-	//printf("Y RECV: %d\n", target_y);
-	*/
 	RecvMsg(sockfd, buffer);
 	int coord_num;
         coord_num = atoi(buffer);
 	target_x = coord_num / 10;
-	printf("X RECV: %d\n", target_x);
 	target_y = coord_num % 10;
-	printf("Y RECV: %d\n", target_y);
 	if(myScreen[target_x][target_y] == blue){
 		myScreen[target_x][target_y] = red;
 		strcpy(buffer, "hit");
@@ -222,7 +204,6 @@ void recvMissile(){
 }
 
 void recvGameplayMsg(){
-	printf("-----In recvGameplayMsg()-----\n");
 	RecvMsg(sockfd, buffer);
 	if(strncmp(buffer, "play", 4) == 0){
 		return;
@@ -238,9 +219,7 @@ void recvGameplayMsg(){
 }
 
 void recvIfHit(){
-	printf("------In recvIfHit()-----\n");
 	RecvMsg(sockfd, buffer);
-	//printf("MSG IF HIT: %s\n", buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
 		yourScreen[target_x][target_y] = red;
 		printf("You hit a ship!");
@@ -253,6 +232,7 @@ void recvIfHit(){
 		printf("Error receiving if hit...\nCalling again...\n");
 		recvIfHit();
 	}
+	displayScreen(yourScreen);
 }
 
 int main(int argc, char* argv[]){
