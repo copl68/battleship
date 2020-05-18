@@ -201,6 +201,7 @@ void recvMissile(){
 		strcpy(buffer, "miss");
 		SendMsg(sockfd, buffer);
 	}
+	displayScreen(myScreen);
 }
 
 void recvGameplayMsg(){
@@ -222,11 +223,11 @@ void recvIfHit(){
 	RecvMsg(sockfd, buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
 		yourScreen[target_x][target_y] = red;
-		printf("You hit a ship!");
+		printf("You hit a ship!\n");
 	}
 	else if(strncmp(buffer, "miss", 4) == 0){
 		yourScreen[target_x][target_y] = white;
-		printf("You missed");
+		printf("You missed\n");
 	}
 	else{
 		printf("Error receiving if hit...\nCalling again...\n");
@@ -265,7 +266,6 @@ int main(int argc, char* argv[]){
 		recvGameplayMsg();
 		sendMissile();
 		recvIfHit();
-		printf("Exiting server if\n");
 	}
 	else if(argc == 3){
 		//Client
@@ -274,7 +274,6 @@ int main(int argc, char* argv[]){
 		setPiece(myScreen, 3);
 		setPiece(myScreen, 5);
 		displayScreen(myScreen);
-		printf("Exiting client if\n");
 	}
 	else{
 		fprintf(stderr, "\nInvalid Use...\nServer use: ./final <port>\nClient use: ./final <port> <server_name>\n\n");
@@ -283,7 +282,6 @@ int main(int argc, char* argv[]){
 
 	//game loop
 	while(playGame()){
-		printf("Starting while loop\n");
 		recvMissile();
 
 		//recv a message ... either someone won or they didnt... other player is in playGame at this point and will send message from there
