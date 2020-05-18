@@ -51,7 +51,7 @@ int CreateServer(char* argv[]){
 void RecvMsg(int newsockfd, char buffer[]){
 	bzero(buffer, BUFFER_SIZE);
 	printf("Receiving (buffer before): %s\n", buffer);
-	int n = recv(newsockfd, buffer, BUFFER_SIZE-1, 0);
+	int n = recv(newsockfd, buffer, BUFFER_SIZE, 0);
 	printf("Recv receives: %d\n");
 	printf("Receiving (buffer after): %s\n", buffer);
 	if(n < 0){ fprintf(stderr, "Error: Cannot read from socket\n"); exit(1);}
