@@ -1,7 +1,10 @@
 /*
- *
- * Add Comments
- *
+ * Names: Cole Plum & Mina Rulis
+ * Date: 5.18.2020
+ * File: main.c
+ * Description: A game of battleship. The ships of sizes 2, 3, and 5 are randomly placed for each player. 
+ * The server shoots first and the players alternate turns until there is a winner. A white space symbolizes a
+ * missed shot, while a red space symbolized a hit ship.  
  */
 
 #include "sockets.h"
@@ -129,6 +132,7 @@ bool playGame(){
 			}
 		}
 		if(countShips == 10){
+			//All ships have been hit
 			strcpy(buffer, "You lose");
 			SendMsg(sockfd, buffer);
 			printf("You win!\n");
@@ -142,6 +146,8 @@ bool playGame(){
 	}
 }
 
+//Called when the joystick is pressed while in the sendMissile(). Moves a target to somewhere on the screen and 
+//sends a missile to the other player when pressed
 void callbackFn(unsigned int code){
 	int coord_num;
 	setPixel(fb->bitmap, target_x, target_y, yourScreen[target_x][target_y]);
@@ -170,6 +176,7 @@ void callbackFn(unsigned int code){
 	setPixel(fb->bitmap, target_x, target_y, green);
 }
 
+//Sends a missile to the other player. Once the joystick is pressed, the missile is send and the function exits
 void sendMissile(){
 	joystick = getJoystickDevice();
 	int missileSent = 0;
@@ -183,6 +190,8 @@ void sendMissile(){
 	usleep(500000);
 }
 
+//Receives the coordinates of an incoming missile in the form of a double-digit number and determines if the 
+//missile hit a ship or not
 void recvMissile(){
 	sleep(1);
 	displayScreen(myScreen);
@@ -192,11 +201,13 @@ void recvMissile(){
 	target_x = coord_num / 10;
 	target_y = coord_num % 10;
 	if(myScreen[target_x][target_y] == blue){
+		//A ship was hit
 		myScreen[target_x][target_y] = red;
 		strcpy(buffer, "hit");
 		SendMsg(sockfd, buffer);
 	}
 	else{
+		//A ship was not hit
 		myScreen[target_x][target_y] = white;
 		strcpy(buffer, "miss");
 		SendMsg(sockfd, buffer);
@@ -204,9 +215,11 @@ void recvMissile(){
 	displayScreen(myScreen);
 }
 
+//Receives a message which determines if the game is over or if it should keep going
 void recvGameplayMsg(){
 	RecvMsg(sockfd, buffer);
 	if(strncmp(buffer, "play", 4) == 0){
+		//Game continues
 		return;
 	}
 	else if(strncmp(buffer, "You lose", 8) == 0){
@@ -219,6 +232,7 @@ void recvGameplayMsg(){
 	}
 }
 
+//Receives a message telling you whether the missile you sent hit a ship or not. 
 void recvIfHit(){
 	RecvMsg(sockfd, buffer);
 	if(strncmp(buffer, "hit", 3) == 0){
@@ -236,6 +250,7 @@ void recvIfHit(){
 	displayScreen(yourScreen);
 }
 
+//Main functin which sets up variables, takes care of server/client socket creation, and executes the gameplay loop
 int main(int argc, char* argv[]){
 	signal(SIGINT, interrupt_handler);
 	white = getColor(255,255,255);
@@ -245,7 +260,7 @@ int main(int argc, char* argv[]){
 	blank = getColor(0,0,0);
 	fb = getFBDevice();
 
-	
+	//Sets screen arrays to be completely blank
 	srand(time(0));
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
@@ -280,7 +295,7 @@ int main(int argc, char* argv[]){
 		exit(0);
 	}
 
-	//game loop
+	//Game loop
 	while(playGame()){
 		recvMissile();
 
