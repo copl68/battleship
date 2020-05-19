@@ -200,7 +200,7 @@ void recvMissile(){
         coord_num = atoi(buffer);
 	target_x = coord_num / 10;
 	target_y = coord_num % 10;
-	if(myScreen[target_x][target_y] == blue){
+	if(myScreen[target_x][target_y] == blue || myScreen[target_x][target_y] == red){
 		//A ship was hit
 		myScreen[target_x][target_y] = red;
 		strcpy(buffer, "hit");
